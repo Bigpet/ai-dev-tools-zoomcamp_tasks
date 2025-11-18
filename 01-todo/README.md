@@ -46,6 +46,19 @@ I needed to edit the settings.py
 
 ## Answer 3: Django Models
 
+I queried the AI for a model file. I wanted a Task and a TaskList model.
+It obliged happily and didn't look to bad on first sight.
+
+I executed these commands to register the models correctly
+
+```
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+# todos/admin.py edited to register
+
+python manage.py createsuperuser  # just used admin/admin :P
+```
 
 
 # Original Task
