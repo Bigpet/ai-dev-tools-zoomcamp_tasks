@@ -6,8 +6,6 @@ I first queried the AI to create a README to give some context to the _tasks rep
 But it did give me most of the commands to finish the initial tasks.
 
 
-# Original Task
-
 # Introduction to AI-Assisted Development 
 
 In this homework, we'll build an application with AI.
@@ -18,6 +16,39 @@ We will build a TODO application in Django.
 
 You will only need Python to get started. You don't need to know Python or Django for that.
 
+## Answer 1: Install Django
+
+The AI suggested just pip, but I used uv instead.
+I executed for the setup:
+
+```
+uv init
+uv venv
+uv pip install django
+```
+
+
+## Answer 2: Project and App
+
+Then I had to query for some more details about the setup, because I never setup a django project before.
+
+```
+uv run django-admin startproject todo_project .
+uv run python manage.py startapp todos
+# added "todos.apps.TodosConfig" to the settings.py
+source ./.venv/bin/activate
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+```
+
+I needed to edit the settings.py
+
+## Answer 3: Django Models
+
+
+
+# Original Task
 
 ## Question 1: Install Django
 
