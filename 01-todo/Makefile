@@ -1,31 +1,33 @@
+PYTHON = .venv/bin/python
+
 .PHONY: install migrate run test clean superuser shell
 
 install:
-    uv pip install django
+	uv pip install -e .
 
 migrate:
-    python manage.py makemigrations
-    python manage.py migrate
+	$(PYTHON) manage.py makemigrations
+	$(PYTHON) manage.py migrate
 
 run:
-    python manage.py runserver
+	$(PYTHON) manage.py runserver
 
 test:
-    python manage.py test
+	$(PYTHON) manage.py test
 
 superuser:
-    python manage.py createsuperuser
+	$(PYTHON) manage.py createsuperuser
 
 shell:
-    python manage.py shell
+	$(PYTHON) manage.py shell
 
 clean:
-    find . -type d -name __pycache__ -exec rm -rf {} +
-    find . -type f -name "*.pyc" -delete
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
 
 resetdb:
-    rm -f db.sqlite3
-    python manage.py migrate
+	rm -f db.sqlite3
+	$(PYTHON) manage.py migrate
 
 collectstatic:
-    python manage.py collectstatic --noinput
+	$(PYTHON) manage.py collectstatic --noinput
