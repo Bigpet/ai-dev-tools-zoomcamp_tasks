@@ -72,6 +72,7 @@ I asked the AI to implement the logic for the TODO app. It suggested views.py fo
 
 ## Answer 6. Tests
 
+The tests are ran with `python manage.py test` (or with `make test`)
 
 
 # Original Task
