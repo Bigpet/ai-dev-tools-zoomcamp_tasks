@@ -60,6 +60,10 @@ python manage.py runserver
 python manage.py createsuperuser  # just used admin/admin :P
 ```
 
+## Answer 4: TODO Logic
+
+I asked the AI to implement the logic for the TODO app. It suggested views.py for the logic and urls.py for the urls.
+
 
 # Original Task
 

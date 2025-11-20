@@ -1,0 +1,72 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<h1>{% if form.instance.pk %}Edit Task{% else %}New Task{% endif %}</h1>
+
+<form method="post">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="{{ form.title.id_for_label }}" class="form-label">Title</label>
+        <input type="text" name="title" id="{{ form.title.id_for_label }}" class="form-control"
+            value="{{ form.title.value|default:'' }}" required>
+        {% if form.title.errors %}
+        <div class="text-danger">{{ form.title.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+        <textarea name="description" id="{{ form.description.id_for_label }}"
+            class="form-control">{{ form.description.value|default:'' }}</textarea>
+        {% if form.description.errors %}
+        <div class="text-danger">{{ form.description.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.due_date.id_for_label }}" class="form-label">Due Date</label>
+        <input type="datetime-local" name="due_date" id="{{ form.due_date.id_for_label }}" class="form-control"
+            value="{{ form.due_date.value|date:'Y-m-d\TH:i'|default:'' }}">
+        {% if form.due_date.errors %}
+        <div class="text-danger">{{ form.due_date.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.priority.id_for_label }}" class="form-label">Priority</label>
+        <select name="priority" id="{{ form.priority.id_for_label }}" class="form-select">
+            {% for value, label in form.fields.priority.choices %}
+            <option value="{{ value }}" {% if form.priority.value==value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        {% if form.priority.errors %}
+        <div class="text-danger">{{ form.priority.errors }}</div>
+        {% endif %}
+    </div>
+
+    <div class="mb-3">
+        <label for="{{ form.task_list.id_for_label }}" class="form-label">Task List</label>
+        <select name="task_list" id="{{ form.task_list.id_for_label }}" class="form-select">
+            <option value="">---------</option>
+            {% for choice in form.fields.task_list.queryset %}
+            <option value="{{ choice.pk }}" {% if form.task_list.value==choice.pk %}selected{% endif %}>{{ choice }}
+            </option>
+            {% endfor %}
+        </select>
+        {% if form.task_list.errors %}
+        <div class="text-danger">{{ form.task_list.errors }}</div>
+        {% endif %}
+    </div>
+
+    {% if form.instance.pk %}
+    <div class="mb-3 form-check">
+        <input type="checkbox" name="completed" id="{{ form.completed.id_for_label }}" class="form-check-input" {% if
+            form.completed.value %}checked{% endif %}>
+        <label for="{{ form.completed.id_for_label }}" class="form-check-label">Completed</label>
+    </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{% url 'task_list' %}" class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}

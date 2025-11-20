@@ -1,0 +1,39 @@
+{% extends 'todos/base.html' %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h1>Tasks</h1>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'task_create' %}" class="btn btn-success">Add Task</a>
+    </div>
+</div>
+
+<div class="list-group">
+    {% for task in tasks %}
+    <div
+        class="list-group-item d-flex justify-content-between align-items-center {% if task.completed %}bg-light{% endif %}">
+        <div class="d-flex align-items-center">
+            <a href="{% url 'task_toggle' task.pk %}"
+                class="btn btn-sm {% if task.completed %}btn-secondary{% else %}btn-outline-primary{% endif %} me-3">
+                {% if task.completed %}✓{% else %}○{% endif %}
+            </a>
+            <div>
+                <h5 class="mb-1 {% if task.completed %}task-completed{% endif %}">{{ task.title }}</h5>
+                <small class="text-muted">
+                    Priority: {{ task.get_priority_display }} |
+                    Due: {{ task.due_date|date:"M d, Y"|default:"No due date" }}
+                </small>
+            </div>
+        </div>
+        <div>
+            <a href="{% url 'task_update' task.pk %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+            <a href="{% url 'task_delete' task.pk %}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+    </div>
+    {% empty %}
+    <div class="list-group-item">No tasks found.</div>
+    {% endfor %}
+</div>
+{% endblock %}
