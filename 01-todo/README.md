@@ -64,6 +64,15 @@ python manage.py createsuperuser  # just used admin/admin :P
 
 I asked the AI to implement the logic for the TODO app. It suggested views.py for the logic and urls.py for the urls.
 
+## Answer 5. Templates
+
+- `INSTALLED_APPS` in project's `settings.py` ==> app needs to be registered here
+- `TEMPLATES['APP_DIRS']` in project's `settings.py` ==> Needs to be set to True
+- In the app's `urls.py` ==> Templates need to be registered here
+
+## Answer 6. Tests
+
+
 
 # Original Task
 
