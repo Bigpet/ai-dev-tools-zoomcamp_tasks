@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import io from 'socket.io-client';
-import CodeEditor from './components/Editor';
+import SyncedCodeEditor from './components/SyncedCodeEditor';
 import Output from './components/Output';
 import './App.css';
 
@@ -14,24 +14,6 @@ function App() {
   const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
   const [output, setOutput] = useState([]);
   const [roomId, setRoomId] = useState('default-room');
-
-  useEffect(() => {
-    socket.emit('join-room', roomId);
-
-    socket.on('code-update', (newCode) => {
-      setCode(newCode);
-    });
-
-    return () => {
-      socket.off('code-update');
-    };
-  }, [roomId]);
-
-  const handleCodeChange = (newCode) => {
-    setCode(newCode);
-    socket.emit('code-change', { roomId, code: newCode });
-  };
-
 
   const runCode = () => {
     setOutput([]); // Clear previous output
@@ -70,7 +52,12 @@ function App() {
       </div>
       <div className="main-content">
         <div className="editor-pane">
-          <CodeEditor code={code} onChange={handleCodeChange} />
+          <SyncedCodeEditor
+            code={code}
+            onChange={setCode}
+            roomId={roomId}
+            socket={socket}
+          />
         </div>
         <div className="output-pane">
           <Output output={output} />
