@@ -1,0 +1,72 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #1e1e1e;
+  color: white;
+  font-family: 'Inter', sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #2d2d2d;
+  border-bottom: 1px solid #333;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.header button {
+  padding: 8px 16px;
+  background-color: #0e639c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.header button:hover {
+  background-color: #1177bb;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.editor-pane {
+  flex: 1;
+  border-right: 1px solid #333;
+}
+
+.output-pane {
+  width: 300px;
+  background-color: #1e1e1e;
+  padding: 10px;
+  overflow-y: auto;
+  border-left: 1px solid #333;
+}
+
+.editor-container {
+  height: 100%;
+}
+
+.output-container h3 {
+  margin-top: 0;
+  border-bottom: 1px solid #333;
+  padding-bottom: 5px;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.9rem;
+}

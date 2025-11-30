@@ -1,0 +1,81 @@
+import React, { useState, useEffect, useRef } from 'react';
+import io from 'socket.io-client';
+import CodeEditor from './components/Editor';
+import Output from './components/Output';
+import './App.css';
+
+import Worker from './worker?worker';
+
+const socket = io('http://localhost:3001');
+
+function App() {
+  const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
+  const [output, setOutput] = useState([]);
+  const [roomId, setRoomId] = useState('default-room');
+
+  useEffect(() => {
+    socket.emit('join-room', roomId);
+
+    socket.on('code-update', (newCode) => {
+      setCode(newCode);
+    });
+
+    return () => {
+      socket.off('code-update');
+    };
+  }, [roomId]);
+
+  const handleCodeChange = (newCode) => {
+    setCode(newCode);
+    socket.emit('code-change', { roomId, code: newCode });
+  };
+
+
+  const runCode = () => {
+    setOutput([]); // Clear previous output
+
+    const worker = new Worker();
+
+    worker.onmessage = (e) => {
+      const { type, logs, error } = e.data;
+      if (type === 'success') {
+        setOutput(logs);
+      } else {
+        setOutput([...logs, `Error: ${error}`]);
+      }
+      worker.terminate();
+    };
+
+    worker.onerror = (error) => {
+      setOutput([`Worker Error: ${error.message}`]);
+      worker.terminate();
+    };
+
+    worker.postMessage(code);
+
+    // Timeout to prevent infinite loops
+    setTimeout(() => {
+      worker.terminate();
+      setOutput((prev) => [...prev, 'Execution timed out (5s limit)']);
+    }, 5000);
+  };
+
+  return (
+    <div className="app-container">
+      <div className="header">
+        <h1>Coding Interview Platform</h1>
+        <button onClick={runCode}>Run Code</button>
+      </div>
+      <div className="main-content">
+        <div className="editor-pane">
+          <CodeEditor code={code} onChange={handleCodeChange} />
+        </div>
+        <div className="output-pane">
+          <Output output={output} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default App;
