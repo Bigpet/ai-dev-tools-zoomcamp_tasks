@@ -82,6 +82,38 @@ npm run server
 npm run client
 ```
 
+## Configuration
+
+### Environment Variables
+
+The frontend uses environment variables to configure the backend URL. This allows you to deploy to different environments without changing the code.
+
+**Location**: `client/.env.development` or `client/.env.production`
+
+**Available variables**:
+- `VITE_BACKEND_URL` - The URL of the backend server (default: `http://localhost:3001`)
+
+### Setting Up for Production
+
+1. **Update the production environment file**:
+   
+   Edit `client/.env.production`:
+   ```env
+   VITE_BACKEND_URL=https://your-backend-domain.com
+   ```
+
+2. **Or set environment variables during build**:
+   ```bash
+   cd client
+   VITE_BACKEND_URL=https://your-backend-domain.com npm run build
+   ```
+
+The application will automatically use:
+- `.env.development` when running `npm run dev`
+- `.env.production` when running `npm run build`
+
+> **Note**: Environment variables must be prefixed with `VITE_` to be exposed to the client-side code in Vite applications.
+
 ### Production Build
 
 To build the client for production:

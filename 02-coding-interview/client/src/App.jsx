@@ -6,7 +6,9 @@ import './App.css';
 
 import Worker from './worker?worker';
 
-const socket = io('http://localhost:3001');
+// Get backend URL from environment variable, fallback to localhost
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
+const socket = io(BACKEND_URL);
 
 function App() {
   const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
