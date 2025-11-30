@@ -40,7 +40,13 @@ io.on('connection', (socket) => {
 });
 
 const PORT = process.env.PORT || 3001;
-server.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
 
+// Only start server when this file is run directly (not imported for tests)
+if (require.main === module) {
+    server.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// Export for testing
+module.exports = { app, server, io, rooms };
