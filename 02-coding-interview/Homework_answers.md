@@ -4,6 +4,8 @@ The Questions are in the Homework_questions.md file.
 
 ## Answer 1 
 
+> Q: What's the initial prompt you gave to AI to start the implementation?
+
 The prompt I gave was:
 
 > I have a project to do with the following requirements, please generate an initial implmentation and note in the README.md which tasks are completed.
@@ -39,3 +41,49 @@ You don't need to know these technologies for doing this homework.
 
 ## Answer 2
 
+> Q: What's the terminal command you use for executing tests?
+
+```
+cd server
+npm test
+```
+
+## Answer 3
+
+> Q: What's the command you have in `package.json` for `npm dev` for running both?
+
+```
+concurrently "npm run server" "npm run client"
+```
+
+## Answer 4
+
+> Q: Which library did AI use for syntax highlighting?
+
+```
+
+```
+
+## Answer 5
+
+> Q: Which library did AI use for compiling Python to WASM?
+
+```
+
+```
+
+## Answer 6
+
+> Q: What's the base image you used for your Dockerfile?
+
+```
+
+```
+
+## Answer 7
+
+> Q: Which service did you use for deployment?
+
+```
+
+```
