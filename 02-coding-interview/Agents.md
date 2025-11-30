@@ -1,0 +1,1 @@
+Commit to git when finishing a task.
