@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import CodeEditor from './components/Editor';
 import Output from './components/Output';
@@ -10,10 +10,16 @@ import Worker from './worker?worker';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 const socket = io(BACKEND_URL);
 
+// Get roomId from URL query parameter, fallback to 'default-room'
+const getRoomIdFromUrl = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('roomId') || 'default-room';
+};
+
 function App() {
   const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
   const [output, setOutput] = useState([]);
-  const [roomId, setRoomId] = useState('default-room');
+  const [roomId] = useState(() => getRoomIdFromUrl());
 
   useEffect(() => {
     socket.emit('join-room', roomId);
