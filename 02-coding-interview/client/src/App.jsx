@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import SyncedCodeEditor from './components/SyncedCodeEditor';
 import Output from './components/Output';
@@ -10,11 +10,77 @@ import Worker from './worker?worker';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001';
 const socket = io(BACKEND_URL);
 
+// Default templates for each language
+const defaultCodeTemplates = {
+  javascript: `// JavaScript Example
+// Try running this code!
+
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+console.log("Fibonacci sequence:");
+for (let i = 0; i < 10; i++) {
+    console.log(\`fib(\${i}) = \${fibonacci(i)}\`);
+}`,
+  python: `# Python Example
+# Try running this code!
+
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print("Fibonacci sequence:")
+for i in range(10):
+    print(f"fib({i}) = {fibonacci(i)}")`
+};
+
 function App() {
-  const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
+  const [codeByLanguage, setCodeByLanguage] = useState({ ...defaultCodeTemplates });
   const [output, setOutput] = useState([]);
   const [roomId, setRoomId] = useState('default-room');
   const [language, setLanguage] = useState('javascript');
+
+  // Get current code for the active language
+  const code = codeByLanguage[language];
+
+  // Handle room state updates from server
+  useEffect(() => {
+    const handleRoomState = ({ code, language: roomLanguage }) => {
+      setCodeByLanguage(code);
+      setLanguage(roomLanguage);
+    };
+
+    const handleLanguageUpdate = (newLanguage) => {
+      setLanguage(newLanguage);
+    };
+
+    socket.on('room-state', handleRoomState);
+    socket.on('language-update', handleLanguageUpdate);
+
+    return () => {
+      socket.off('room-state', handleRoomState);
+      socket.off('language-update', handleLanguageUpdate);
+    };
+  }, []);
+
+  const handleCodeChange = (newCode) => {
+    // Update local state
+    setCodeByLanguage(prev => ({
+      ...prev,
+      [language]: newCode
+    }));
+  };
+
+  const handleLanguageChange = (newLanguage) => {
+    // Update local state
+    setLanguage(newLanguage);
+
+    // Emit language change to server to sync with other clients
+    socket.emit('language-change', { roomId, language: newLanguage });
+  };
 
   const runCode = () => {
     setOutput([]); // Clear previous output
@@ -52,7 +118,7 @@ function App() {
         <div className="controls">
           <select
             value={language}
-            onChange={(e) => setLanguage(e.target.value)}
+            onChange={(e) => handleLanguageChange(e.target.value)}
             className="language-selector"
           >
             <option value="javascript">JavaScript</option>
@@ -65,10 +131,11 @@ function App() {
         <div className="editor-pane">
           <SyncedCodeEditor
             code={code}
-            onChange={setCode}
+            onChange={handleCodeChange}
             roomId={roomId}
             socket={socket}
             language={language}
+            codeByLanguage={codeByLanguage}
           />
         </div>
         <div className="output-pane">

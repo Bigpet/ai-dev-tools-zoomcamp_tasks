@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import CodeEditor from './Editor';
 
-const SyncedCodeEditor = ({ code, onChange, roomId, socket, language }) => {
+const SyncedCodeEditor = ({ code, onChange, roomId, socket, language, codeByLanguage }) => {
     useEffect(() => {
         if (!socket) return;
 
         socket.emit('join-room', roomId);
 
-        const handleCodeUpdate = (newCode) => {
-            onChange(newCode);
+        const handleCodeUpdate = ({ code: newCode, language: updateLanguage }) => {
+            // Only update if the code update is for the current language
+            if (updateLanguage === language) {
+                onChange(newCode);
+            }
         };
 
         socket.on('code-update', handleCodeUpdate);
@@ -16,12 +19,12 @@ const SyncedCodeEditor = ({ code, onChange, roomId, socket, language }) => {
         return () => {
             socket.off('code-update', handleCodeUpdate);
         };
-    }, [roomId, socket, onChange]);
+    }, [roomId, socket, onChange, language]);
 
     const handleCodeChange = (newCode) => {
         onChange(newCode);
         if (socket) {
-            socket.emit('code-change', { roomId, code: newCode });
+            socket.emit('code-change', { roomId, code: newCode, language });
         }
     };
 
