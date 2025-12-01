@@ -203,9 +203,9 @@ function App() {
               <option value="javascript">JavaScript</option>
               <option value="python">Python</option>
             </select>
-            <button onClick={runCode}>Run Code</button>
           </div>
           <ConnectionStatus socket={socket} />
+          <button onClick={runCode} className="run-code-btn">Run Code</button>
         </div>
       </div>
       <div className="main-content">

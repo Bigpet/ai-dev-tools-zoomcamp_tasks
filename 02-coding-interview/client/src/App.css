@@ -105,6 +105,10 @@
   background-color: #1177bb;
 }
 
+.run-code-btn {
+  white-space: nowrap;
+}
+
 .main-content {
   display: flex;
   flex: 1;
