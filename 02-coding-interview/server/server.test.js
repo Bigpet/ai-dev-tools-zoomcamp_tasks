@@ -79,7 +79,7 @@ describe('Server Integration Tests', () => {
         // First client joins and sets code
         clientSocket1.on('connect', () => {
             clientSocket1.emit('join-room', roomId);
-            clientSocket1.emit('code-change', { roomId, code: existingCode });
+            clientSocket1.emit('code-change', { roomId, code: existingCode, language: 'javascript' });
 
             // Wait for code to be set, then create and connect second client
             setTimeout(() => {
@@ -94,8 +94,8 @@ describe('Server Integration Tests', () => {
                     forceNew: true
                 });
 
-                clientSocket2.on('code-update', (code) => {
-                    expect(code).toBe(existingCode);
+                clientSocket2.on('code-update', (data) => {
+                    expect(data.code).toBe(existingCode);
                     done();
                 });
 
@@ -116,7 +116,7 @@ describe('Server Integration Tests', () => {
         const checkAndProceed = () => {
             if (client1Connected && client2Connected) {
                 // Both clients connected, now send code change
-                clientSocket1.emit('code-change', { roomId, code: testCode });
+                clientSocket1.emit('code-change', { roomId, code: testCode, language: 'javascript' });
             }
         };
 
@@ -131,8 +131,8 @@ describe('Server Integration Tests', () => {
             client2Connected = true;
 
             // Client 2 should receive code updates
-            clientSocket2.on('code-update', (code) => {
-                expect(code).toBe(testCode);
+            clientSocket2.on('code-update', (data) => {
+                expect(data.code).toBe(testCode);
                 done();
             });
 
@@ -157,12 +157,12 @@ describe('Server Integration Tests', () => {
             connectCount++;
             if (connectCount === totalClients) {
                 // All clients connected, send code change from client 1
-                clientSocket1.emit('code-change', { roomId, code: testCode });
+                clientSocket1.emit('code-change', { roomId, code: testCode, language: 'javascript' });
             }
         };
 
-        const handleCodeUpdate = (code) => {
-            expect(code).toBe(testCode);
+        const handleCodeUpdate = (data) => {
+            expect(data.code).toBe(testCode);
             receivedCount++;
 
             // Client 1 sends, so clients 2 and 3 should receive (2 total)
@@ -202,9 +202,9 @@ describe('Server Integration Tests', () => {
             clientSocket1.emit('join-room', room1);
 
             // Client1 should NOT receive room2's code
-            clientSocket1.on('code-update', (code) => {
+            clientSocket1.on('code-update', (data) => {
                 // This should not be called
-                expect(code).not.toBe(codeRoom2);
+                expect(data.code).not.toBe(codeRoom2);
             });
         });
 
@@ -212,16 +212,16 @@ describe('Server Integration Tests', () => {
             clientSocket2.emit('join-room', room2);
 
             // Client2 should NOT receive room1's code
-            clientSocket2.on('code-update', (code) => {
+            clientSocket2.on('code-update', (data) => {
                 // This should not be called
-                expect(code).not.toBe(codeRoom1);
+                expect(data.code).not.toBe(codeRoom1);
             });
 
             // Give clients time to join rooms
             setTimeout(() => {
                 // Send code changes to different rooms
-                clientSocket1.emit('code-change', { roomId: room1, code: codeRoom1 });
-                clientSocket2.emit('code-change', { roomId: room2, code: codeRoom2 });
+                clientSocket1.emit('code-change', { roomId: room1, code: codeRoom1, language: 'javascript' });
+                clientSocket2.emit('code-change', { roomId: room2, code: codeRoom2, language: 'javascript' });
 
                 // Wait and verify no cross-room updates occurred
                 setTimeout(() => {

@@ -69,6 +69,7 @@ describe('SyncedCodeEditor', () => {
         expect(mockSocket.emit).toHaveBeenCalledWith('code-change', {
             roomId: 'test-room',
             code: 'new code',
+            language: 'javascript',
         });
     });
 
@@ -94,7 +95,7 @@ describe('SyncedCodeEditor', () => {
 
         // Simulate receiving an event
         if (codeUpdateCallback) {
-            codeUpdateCallback('updated code from server');
+            codeUpdateCallback({ code: 'updated code from server', language: 'javascript' });
         }
 
         expect(mockOnChange).toHaveBeenCalledWith('updated code from server');
