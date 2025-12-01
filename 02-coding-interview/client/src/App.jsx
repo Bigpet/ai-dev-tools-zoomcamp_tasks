@@ -14,6 +14,7 @@ function App() {
   const [code, setCode] = useState('// Write your code here\nconsole.log("Hello World!");');
   const [output, setOutput] = useState([]);
   const [roomId, setRoomId] = useState('default-room');
+  const [language, setLanguage] = useState('javascript');
 
   const runCode = () => {
     setOutput([]); // Clear previous output
@@ -48,7 +49,17 @@ function App() {
     <div className="app-container">
       <div className="header">
         <h1>Coding Interview Platform</h1>
-        <button onClick={runCode}>Run Code</button>
+        <div className="controls">
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value)}
+            className="language-selector"
+          >
+            <option value="javascript">JavaScript</option>
+            <option value="python">Python</option>
+          </select>
+          <button onClick={runCode}>Run Code</button>
+        </div>
       </div>
       <div className="main-content">
         <div className="editor-pane">
@@ -57,6 +68,7 @@ function App() {
             onChange={setCode}
             roomId={roomId}
             socket={socket}
+            language={language}
           />
         </div>
         <div className="output-pane">

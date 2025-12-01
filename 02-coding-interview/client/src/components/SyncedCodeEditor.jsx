@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import CodeEditor from './Editor';
 
-const SyncedCodeEditor = ({ code, onChange, roomId, socket }) => {
+const SyncedCodeEditor = ({ code, onChange, roomId, socket, language }) => {
     useEffect(() => {
         if (!socket) return;
 
@@ -29,6 +29,7 @@ const SyncedCodeEditor = ({ code, onChange, roomId, socket }) => {
         <CodeEditor
             code={code}
             onChange={handleCodeChange}
+            language={language}
         />
     );
 };
