@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
-import { executeCode } from './executeCode';
+import { executeJS } from './executeJS';
 
-describe('executeCode', () => {
+describe('executeJS', () => {
     it('executes script with function definitions and calls', () => {
         const code = `
             console.log("AA");
@@ -17,7 +17,7 @@ describe('executeCode', () => {
         const logs = [];
         const onLog = (log) => logs.push(log);
 
-        executeCode(code, onLog);
+        executeJS(code, onLog);
 
         expect(logs).toEqual([
             'AA',
@@ -30,6 +30,6 @@ describe('executeCode', () => {
         const code = 'throw new Error("Test Error");';
         const onLog = vi.fn();
 
-        expect(() => executeCode(code, onLog)).toThrow('Test Error');
+        expect(() => executeJS(code, onLog)).toThrow('Test Error');
     });
 });

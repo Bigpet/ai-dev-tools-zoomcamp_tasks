@@ -36,7 +36,7 @@ function App() {
       worker.terminate();
     };
 
-    worker.postMessage(code);
+    worker.postMessage({ code, language });
 
     // Timeout to prevent infinite loops
     setTimeout(() => {

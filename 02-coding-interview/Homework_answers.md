@@ -61,7 +61,7 @@ concurrently "npm run server" "npm run client"
 > Q: Which library did AI use for syntax highlighting?
 
 ```
-
+It uses the monaco editor which has syntax highlighting for multiple languages (and is extensible via monarch).
 ```
 
 ## Answer 5

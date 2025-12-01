@@ -1,4 +1,4 @@
-export const executeCode = (code, onLog) => {
+export const executeJS = (code, onLog) => {
     const originalConsoleLog = console.log;
     console.log = (...args) => {
         onLog(args.join(' '));
