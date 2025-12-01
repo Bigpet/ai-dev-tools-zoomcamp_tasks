@@ -48,6 +48,7 @@ function App() {
   const [roomId, setRoomId] = useState(initialRoomId);
   const [roomInput, setRoomInput] = useState(initialRoomId);
   const [language, setLanguage] = useState('javascript');
+  const [showCopyNotification, setShowCopyNotification] = useState(false);
 
   // Get current code for the active language
   const code = codeByLanguage[language];
@@ -74,7 +75,8 @@ function App() {
     const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
     try {
       await navigator.clipboard.writeText(inviteUrl);
-      alert('Invite link copied to clipboard!');
+      setShowCopyNotification(true);
+      setTimeout(() => setShowCopyNotification(false), 5000);
     } catch (err) {
       // Fallback for browsers that don't support clipboard API
       const textArea = document.createElement('textarea');
@@ -83,9 +85,10 @@ function App() {
       textArea.select();
       try {
         document.execCommand('copy');
-        alert('Invite link copied to clipboard!');
+        setShowCopyNotification(true);
+        setTimeout(() => setShowCopyNotification(false), 5000);
       } catch (err) {
-        alert('Failed to copy invite link');
+        // Could add error notification here if desired
       }
       document.body.removeChild(textArea);
     }
@@ -184,9 +187,16 @@ function App() {
               className="room-input"
               placeholder="Enter room name"
             />
-            <button onClick={copyInviteLink} className="copy-link-btn" title="Copy invite link">
-              📋 Copy Link
-            </button>
+            <div className="copy-container">
+              <button onClick={copyInviteLink} className="copy-link-btn" title="Copy invite link">
+                📋 Copy Link
+              </button>
+              {showCopyNotification && (
+                <span className="copy-notification">
+                  ✅ Link copied!
+                </span>
+              )}
+            </div>
           </div>
         </div>
         <div className="header-right">
