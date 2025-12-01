@@ -69,7 +69,7 @@ It uses the monaco editor which has syntax highlighting for multiple languages (
 > Q: Which library did AI use for compiling Python to WASM?
 
 ```
-
+pyodide
 ```
 
 ## Answer 6
@@ -77,7 +77,7 @@ It uses the monaco editor which has syntax highlighting for multiple languages (
 > Q: What's the base image you used for your Dockerfile?
 
 ```
-
+node:20-alpine
 ```
 
 ## Answer 7
