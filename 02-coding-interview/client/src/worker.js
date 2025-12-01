@@ -1,4 +1,4 @@
-import { executeCode as executeJS } from './executeJS';
+import { executeJS } from './executeJS';
 import { executePython } from './executePython';
 
 self.onmessage = async (e) => {

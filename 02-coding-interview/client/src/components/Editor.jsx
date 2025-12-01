@@ -1,5 +1,8 @@
 import React from 'react';
-import Editor from '@monaco-editor/react';
+import Editor, { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
+
+loader.config({ monaco });
 
 const CodeEditor = ({ code, onChange, language = 'javascript' }) => {
     const handleEditorChange = (value) => {

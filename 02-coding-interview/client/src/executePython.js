@@ -20,15 +20,16 @@ const stderrHandler = (text) => {
 export const executePython = async (code, onLog) => {
     if (!pyodide) {
         try {
-            // Load Pyodide from CDN
-            const { loadPyodide } = await import("https://cdn.jsdelivr.net/pyodide/v0.25.0/full/pyodide.mjs");
+            // Load Pyodide from local assets
+            const { loadPyodide } = await import("pyodide");
             pyodide = await loadPyodide({
+                indexURL: '/assets/pyodide',
                 stdout: stdoutHandler,
                 stderr: stderrHandler,
             });
         } catch (error) {
             console.error('Failed to load Pyodide:', error);
-            throw new Error('Failed to load Python environment. Please check your internet connection.');
+            throw new Error('Failed to load Python environment.');
         }
     }
 
