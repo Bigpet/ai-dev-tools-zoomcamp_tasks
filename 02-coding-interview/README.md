@@ -38,18 +38,7 @@ Before running this application, ensure you have the following installed:
    
    ```bash
    # Install root dependencies
-   npm install
-   
-   # Install client dependencies
-   cd client
-   npm install
-   
-   # Install server dependencies
-   cd ../server
-   npm install
-   
-   # Return to root
-   cd ..
+   npm run install_all
    ```
 
 ## Running the Application
