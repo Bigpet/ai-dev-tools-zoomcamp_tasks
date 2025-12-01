@@ -3,6 +3,7 @@ import io from 'socket.io-client';
 import SyncedCodeEditor from './components/SyncedCodeEditor';
 import Output from './components/Output';
 import ConnectionStatus from './components/ConnectionStatus';
+import CopyNotification from './components/CopyNotification';
 import './App.css';
 
 import Worker from './worker?worker';
@@ -48,9 +49,7 @@ function App() {
   const [roomId, setRoomId] = useState(initialRoomId);
   const [roomInput, setRoomInput] = useState(initialRoomId);
   const [language, setLanguage] = useState('javascript');
-  const [showCopyNotification, setShowCopyNotification] = useState(false);
-  const [notificationKey, setNotificationKey] = useState(0);
-  const notificationTimeoutRef = useRef(null);
+  const [copyTrigger, setCopyTrigger] = useState(0);
 
   // Get current code for the active language
   const code = codeByLanguage[language];
@@ -76,26 +75,8 @@ function App() {
   const copyInviteLink = async () => {
     const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
 
-    const showNotification = () => {
-      // Clear existing timeout if it exists
-      if (notificationTimeoutRef.current) {
-        clearTimeout(notificationTimeoutRef.current);
-      }
-
-      // Increment key to force re-render and restart animation
-      setNotificationKey(prev => prev + 1);
-      setShowCopyNotification(true);
-
-      // Set new timeout
-      notificationTimeoutRef.current = setTimeout(() => {
-        setShowCopyNotification(false);
-        notificationTimeoutRef.current = null;
-      }, 5000);
-    };
-
     try {
       await navigator.clipboard.writeText(inviteUrl);
-      showNotification();
     } catch (err) {
       // Fallback for browsers that don't support clipboard API
       const textArea = document.createElement('textarea');
@@ -104,12 +85,14 @@ function App() {
       textArea.select();
       try {
         document.execCommand('copy');
-        showNotification();
       } catch (err) {
         // Could add error notification here if desired
       }
       document.body.removeChild(textArea);
     }
+
+    // Trigger the notification
+    setCopyTrigger(prev => prev + 1);
   };
 
   // Handle room state updates from server and initial room join
@@ -132,11 +115,6 @@ function App() {
     return () => {
       socket.off('room-state', handleRoomState);
       socket.off('language-update', handleLanguageUpdate);
-
-      // Clear notification timeout on cleanup
-      if (notificationTimeoutRef.current) {
-        clearTimeout(notificationTimeoutRef.current);
-      }
     };
   }, [roomId]); // Include roomId in dependencies to re-join when room changes
 
@@ -214,11 +192,7 @@ function App() {
               <button onClick={copyInviteLink} className="copy-link-btn" title="Copy invite link">
                 📋 Copy Link
               </button>
-              {showCopyNotification && (
-                <span key={notificationKey} className="copy-notification">
-                  ✅ Link copied!
-                </span>
-              )}
+              <CopyNotification trigger={copyTrigger} />
             </div>
           </div>
         </div>
