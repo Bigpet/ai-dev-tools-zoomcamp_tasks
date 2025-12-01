@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
 import SyncedCodeEditor from './components/SyncedCodeEditor';
 import Output from './components/Output';
+import ConnectionStatus from './components/ConnectionStatus';
 import './App.css';
 
 import Worker from './worker?worker';
@@ -115,16 +116,19 @@ function App() {
     <div className="app-container">
       <div className="header">
         <h1>Coding Interview Platform</h1>
-        <div className="controls">
-          <select
-            value={language}
-            onChange={(e) => handleLanguageChange(e.target.value)}
-            className="language-selector"
-          >
-            <option value="javascript">JavaScript</option>
-            <option value="python">Python</option>
-          </select>
-          <button onClick={runCode}>Run Code</button>
+        <div className="header-right">
+          <div className="controls">
+            <select
+              value={language}
+              onChange={(e) => handleLanguageChange(e.target.value)}
+              className="language-selector"
+            >
+              <option value="javascript">JavaScript</option>
+              <option value="python">Python</option>
+            </select>
+            <button onClick={runCode}>Run Code</button>
+          </div>
+          <ConnectionStatus socket={socket} />
         </div>
       </div>
       <div className="main-content">
