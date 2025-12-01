@@ -39,16 +39,67 @@ for i in range(10):
 };
 
 function App() {
+  // Get room from URL query parameter, fallback to default-room
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialRoomId = urlParams.get('room') || 'default-room';
+
   const [codeByLanguage, setCodeByLanguage] = useState({ ...defaultCodeTemplates });
   const [output, setOutput] = useState([]);
-  const [roomId, setRoomId] = useState('default-room');
+  const [roomId, setRoomId] = useState(initialRoomId);
+  const [roomInput, setRoomInput] = useState(initialRoomId);
   const [language, setLanguage] = useState('javascript');
 
   // Get current code for the active language
   const code = codeByLanguage[language];
 
-  // Handle room state updates from server
+  // Update URL when room changes
+  const updateRoomUrl = (newRoomId) => {
+    const url = new URL(window.location);
+    if (newRoomId === 'default-room') {
+      url.searchParams.delete('room');
+    } else {
+      url.searchParams.set('room', newRoomId);
+    }
+    window.history.replaceState({}, '', url);
+  };
+
+  // Handle room change
+  const handleRoomChange = (newRoomId) => {
+    setRoomId(newRoomId);
+    setRoomInput(newRoomId);
+    updateRoomUrl(newRoomId);
+
+    // Emit room change to server
+    socket.emit('join-room', { roomId: newRoomId, codeByLanguage, language });
+  };
+
+  // Copy invite link to clipboard
+  const copyInviteLink = async () => {
+    const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      alert('Invite link copied to clipboard!');
+    } catch (err) {
+      // Fallback for browsers that don't support clipboard API
+      const textArea = document.createElement('textarea');
+      textArea.value = inviteUrl;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        alert('Invite link copied to clipboard!');
+      } catch (err) {
+        alert('Failed to copy invite link');
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
+  // Handle room state updates from server and initial room join
   useEffect(() => {
+    // Join the initial room
+    socket.emit('join-room', { roomId, codeByLanguage, language });
+
     const handleRoomState = ({ code, language: roomLanguage }) => {
       setCodeByLanguage(code);
       setLanguage(roomLanguage);
@@ -65,7 +116,7 @@ function App() {
       socket.off('room-state', handleRoomState);
       socket.off('language-update', handleLanguageUpdate);
     };
-  }, []);
+  }, []); // Empty dependency array means this runs only once on mount
 
   const handleCodeChange = (newCode) => {
     // Update local state
@@ -116,6 +167,32 @@ function App() {
     <div className="app-container">
       <div className="header">
         <h1>Coding Interview Platform</h1>
+        <div className="header-center">
+          <div className="room-controls">
+            <label htmlFor="room-input" className="room-label">Room:</label>
+            <input
+              id="room-input"
+              type="text"
+              value={roomInput}
+              onChange={(e) => setRoomInput(e.target.value)}
+              onBlur={() => {
+                if (roomInput.trim() !== roomId) {
+                  handleRoomChange(roomInput.trim() || 'default-room');
+                }
+              }}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  e.target.blur();
+                }
+              }}
+              className="room-input"
+              placeholder="Enter room name"
+            />
+            <button onClick={copyInviteLink} className="copy-link-btn" title="Copy invite link">
+              📋 Copy Link
+            </button>
+          </div>
+        </div>
         <div className="header-right">
           <div className="controls">
             <select
