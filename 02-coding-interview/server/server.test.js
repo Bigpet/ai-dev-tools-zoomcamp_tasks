@@ -20,7 +20,11 @@ describe('Server Integration Tests', () => {
     afterAll((done) => {
         // Clean up all connections
         io.close(() => {
-            server.close(done);
+            if (server.listening) {
+                server.close(done);
+            } else {
+                done();
+            }
         });
     });
 
