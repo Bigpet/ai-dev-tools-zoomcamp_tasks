@@ -1,16 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import CodeEditor from './Editor';
 
 const SyncedCodeEditor = ({ code, onChange, roomId, socket, language, codeByLanguage }) => {
+    const onChangeRef = useRef(onChange);
+
+    // Keep the ref updated
+    useEffect(() => {
+        onChangeRef.current = onChange;
+    }, [onChange]);
+
+    // Join room once when component mounts or roomId changes
     useEffect(() => {
         if (!socket) return;
 
         socket.emit('join-room', roomId);
+    }, [roomId, socket]);
+
+    // Handle code updates from other clients
+    useEffect(() => {
+        if (!socket) return;
 
         const handleCodeUpdate = ({ code: newCode, language: updateLanguage }) => {
             // Only update if the code update is for the current language
             if (updateLanguage === language) {
-                onChange(newCode);
+                onChangeRef.current(newCode);
             }
         };
 
@@ -19,7 +32,7 @@ const SyncedCodeEditor = ({ code, onChange, roomId, socket, language, codeByLang
         return () => {
             socket.off('code-update', handleCodeUpdate);
         };
-    }, [roomId, socket, onChange, language]);
+    }, [socket, language]);
 
     const handleCodeChange = (newCode) => {
         onChange(newCode);
