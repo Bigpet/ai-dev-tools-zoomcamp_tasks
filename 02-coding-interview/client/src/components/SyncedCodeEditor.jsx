@@ -9,12 +9,7 @@ const SyncedCodeEditor = ({ code, onChange, roomId, socket, language, codeByLang
         onChangeRef.current = onChange;
     }, [onChange]);
 
-    // Join room once when component mounts or roomId changes
-    useEffect(() => {
-        if (!socket) return;
-
-        socket.emit('join-room', roomId);
-    }, [roomId, socket]);
+    // Note: Room joining is handled by App.jsx useEffect to avoid race conditions
 
     // Handle code updates from other clients
     useEffect(() => {

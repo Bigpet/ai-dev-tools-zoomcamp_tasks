@@ -55,11 +55,7 @@ function App() {
   // Update URL when room changes
   const updateRoomUrl = (newRoomId) => {
     const url = new URL(window.location);
-    if (newRoomId === 'default-room') {
-      url.searchParams.delete('room');
-    } else {
-      url.searchParams.set('room', newRoomId);
-    }
+    url.searchParams.set('room', newRoomId);
     window.history.replaceState({}, '', url);
   };
 
@@ -70,7 +66,7 @@ function App() {
     updateRoomUrl(newRoomId);
 
     // Emit room change to server
-    socket.emit('join-room', { roomId: newRoomId, codeByLanguage, language });
+    socket.emit('join-room', newRoomId);
   };
 
   // Copy invite link to clipboard
@@ -98,7 +94,7 @@ function App() {
   // Handle room state updates from server and initial room join
   useEffect(() => {
     // Join the initial room
-    socket.emit('join-room', { roomId, codeByLanguage, language });
+    socket.emit('join-room', roomId);
 
     const handleRoomState = ({ code, language: roomLanguage }) => {
       setCodeByLanguage(code);
@@ -116,7 +112,7 @@ function App() {
       socket.off('room-state', handleRoomState);
       socket.off('language-update', handleLanguageUpdate);
     };
-  }, []); // Empty dependency array means this runs only once on mount
+  }, [roomId]); // Include roomId in dependencies to re-join when room changes
 
   const handleCodeChange = (newCode) => {
     // Update local state

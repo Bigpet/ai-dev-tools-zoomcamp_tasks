@@ -41,17 +41,18 @@ describe('SyncedCodeEditor', () => {
         expect(screen.getByTestId('mock-editor')).toHaveValue('initial code');
     });
 
-    it('joins the room on mount', () => {
+    it('does not join room on mount (handled by App.jsx)', () => {
         render(
             <SyncedCodeEditor
                 code=""
                 onChange={mockOnChange}
                 roomId="test-room"
                 socket={mockSocket}
-                language="javascript" socket={mockSocket}
+                language="javascript"
             />
         );
-        expect(mockSocket.emit).toHaveBeenCalledWith('join-room', 'test-room');
+        // Should not emit join-room since it's handled by App.jsx
+        expect(mockSocket.emit).not.toHaveBeenCalledWith('join-room', 'test-room');
     });
 
     it('emits code-change when user types', () => {
