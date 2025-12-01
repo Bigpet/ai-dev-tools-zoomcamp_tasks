@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import SyncedCodeEditor from './components/SyncedCodeEditor';
 import Output from './components/Output';
@@ -49,6 +49,8 @@ function App() {
   const [roomInput, setRoomInput] = useState(initialRoomId);
   const [language, setLanguage] = useState('javascript');
   const [showCopyNotification, setShowCopyNotification] = useState(false);
+  const [notificationKey, setNotificationKey] = useState(0);
+  const notificationTimeoutRef = useRef(null);
 
   // Get current code for the active language
   const code = codeByLanguage[language];
@@ -73,10 +75,27 @@ function App() {
   // Copy invite link to clipboard
   const copyInviteLink = async () => {
     const inviteUrl = `${window.location.origin}${window.location.pathname}?room=${roomId}`;
+
+    const showNotification = () => {
+      // Clear existing timeout if it exists
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+
+      // Increment key to force re-render and restart animation
+      setNotificationKey(prev => prev + 1);
+      setShowCopyNotification(true);
+
+      // Set new timeout
+      notificationTimeoutRef.current = setTimeout(() => {
+        setShowCopyNotification(false);
+        notificationTimeoutRef.current = null;
+      }, 5000);
+    };
+
     try {
       await navigator.clipboard.writeText(inviteUrl);
-      setShowCopyNotification(true);
-      setTimeout(() => setShowCopyNotification(false), 5000);
+      showNotification();
     } catch (err) {
       // Fallback for browsers that don't support clipboard API
       const textArea = document.createElement('textarea');
@@ -85,8 +104,7 @@ function App() {
       textArea.select();
       try {
         document.execCommand('copy');
-        setShowCopyNotification(true);
-        setTimeout(() => setShowCopyNotification(false), 5000);
+        showNotification();
       } catch (err) {
         // Could add error notification here if desired
       }
@@ -114,6 +132,11 @@ function App() {
     return () => {
       socket.off('room-state', handleRoomState);
       socket.off('language-update', handleLanguageUpdate);
+
+      // Clear notification timeout on cleanup
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
     };
   }, [roomId]); // Include roomId in dependencies to re-join when room changes
 
@@ -192,7 +215,7 @@ function App() {
                 📋 Copy Link
               </button>
               {showCopyNotification && (
-                <span className="copy-notification">
+                <span key={notificationKey} className="copy-notification">
                   ✅ Link copied!
                 </span>
               )}
