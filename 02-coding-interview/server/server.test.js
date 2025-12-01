@@ -38,16 +38,16 @@ describe('Server Integration Tests', () => {
             transports: ['websocket'],
             forceNew: true
         });
+        clients = [clientSocket1, clientSocket2];
     });
 
     afterEach(() => {
         // Disconnect all clients after each test
-        if (clientSocket1 && clientSocket1.connected) {
-            clientSocket1.disconnect();
-        }
-        if (clientSocket2 && clientSocket2.connected) {
-            clientSocket2.disconnect();
-        }
+        clients.forEach((client) => {
+            if (client && client.connected) {
+                client.disconnect();
+            }
+        });
     });
 
     test('Client can connect to server', (done) => {
@@ -81,7 +81,7 @@ describe('Server Integration Tests', () => {
             clientSocket1.emit('join-room', roomId);
             clientSocket1.emit('code-change', { roomId, code: existingCode, language: 'javascript' });
 
-            // Wait for code to be set, then create and connect second client
+            // Wait for code to be set, then create an additional client
             setTimeout(() => {
                 // Disconnect the default client2 created in beforeEach
                 if (clientSocket2 && clientSocket2.connected) {
@@ -89,18 +89,19 @@ describe('Server Integration Tests', () => {
                 }
 
                 // Create a new client that will receive existing code
-                clientSocket2 = Client(serverUrl, {
+                const clientSocket3 = Client(serverUrl, {
                     transports: ['websocket'],
                     forceNew: true
                 });
+                clients.push(clientSocket3);
 
-                clientSocket2.on('code-update', (data) => {
-                    expect(data.code).toBe(existingCode);
+                clientSocket3.on('room-state', (data) => {
+                    expect(data.code.javascript).toBe(existingCode);
                     done();
                 });
 
-                clientSocket2.on('connect', () => {
-                    clientSocket2.emit('join-room', roomId);
+                clientSocket3.on('connect', () => {
+                    clientSocket3.emit('join-room', roomId);
                 });
             }, 200);
         });
