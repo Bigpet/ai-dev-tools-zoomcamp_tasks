@@ -34,6 +34,7 @@ describe('SyncedCodeEditor', () => {
                 onChange={mockOnChange}
                 roomId="test-room"
                 socket={mockSocket}
+                language="javascript"
             />
         );
         expect(screen.getByTestId('mock-editor')).toBeInTheDocument();
@@ -47,6 +48,7 @@ describe('SyncedCodeEditor', () => {
                 onChange={mockOnChange}
                 roomId="test-room"
                 socket={mockSocket}
+                language="javascript" socket={mockSocket}
             />
         );
         expect(mockSocket.emit).toHaveBeenCalledWith('join-room', 'test-room');
@@ -59,6 +61,7 @@ describe('SyncedCodeEditor', () => {
                 onChange={mockOnChange}
                 roomId="test-room"
                 socket={mockSocket}
+                language="javascript"
             />
         );
 
@@ -88,6 +91,7 @@ describe('SyncedCodeEditor', () => {
                 onChange={mockOnChange}
                 roomId="test-room"
                 socket={mockSocket}
+                language="javascript"
             />
         );
 
