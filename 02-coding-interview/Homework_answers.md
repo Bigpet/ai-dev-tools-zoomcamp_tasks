@@ -85,5 +85,5 @@ node:20-alpine
 > Q: Which service did you use for deployment?
 
 ```
-
+Had an unused oci free-tier vm running, so used that (added as a subdomain to the domain I have from one.com). 
 ```

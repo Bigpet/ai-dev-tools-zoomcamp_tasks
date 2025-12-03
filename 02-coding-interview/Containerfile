@@ -22,7 +22,7 @@ COPY client ./client
 # Build the client for production
 WORKDIR /app/client
 # Set production environment variable for the client build
-ENV VITE_BACKEND_URL=http://localhost:3001
+ENV VITE_BACKEND_URL=http://localhost:80
 RUN npm run build
 
 # Production stage
@@ -41,7 +41,7 @@ COPY server ./server
 
 # Create environment variables
 ENV NODE_ENV=production
-ENV PORT=3001
+ENV PORT=80
 
 # Expose the port
 EXPOSE $PORT
