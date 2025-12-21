@@ -63,9 +63,15 @@ The word "data" appears 59 times on https://datatalks.club/
 > * examples/testing_demo/README.md
 > * docs/python-sdk/fastmcp-settings.mdx
 
+Searching for: 'demo'
+==================================================
+1. examples/testing_demo/README.md
+
 
 ## Question 6: Search Tool (ungraded)
 
 > Now you can ask your assistant to implement it as a tool in main.py - and voila, you have a documentation search engine in your AI
 > assistant!
+
+
 
