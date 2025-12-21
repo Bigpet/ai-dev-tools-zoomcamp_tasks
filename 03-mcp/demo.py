@@ -31,5 +31,13 @@ def main():
     result = _download_web_page_impl("https://invalid-domain-12345.com")
     print("Result:", result)
 
+    # Example 4: Download a simple page
+    print("\n4. Downloading https://github.com/alexeygrigorev/minsearch...")
+    result = _download_web_page_impl("https://github.com/alexeygrigorev/minsearch")
+    print(f"Downloaded {len(result)} characters")
+    print("Content:")
+    print(result)
+    
+
 if __name__ == "__main__":
     main()

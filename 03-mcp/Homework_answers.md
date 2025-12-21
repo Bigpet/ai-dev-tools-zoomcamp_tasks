@@ -29,6 +29,8 @@ STDIO
 > 
 > Select the closest answer if you don't get the exact match.
 
+4. Downloading https://github.com/alexeygrigorev/minsearch...
+Downloaded 9184 characters
 
 ## Question 4: Integrate the Tool
 
@@ -48,6 +50,9 @@ STDIO
 > 
 > Select the closest answer if you don't get the exact match.
 
+The word "data" appears 59 times on https://datatalks.club/
+
+> * 61
 
 ## Question 5: Implement Search (2 points)
 
